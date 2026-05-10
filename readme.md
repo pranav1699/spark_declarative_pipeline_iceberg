@@ -34,33 +34,33 @@ Before running the pipeline, ensure you have the necessary AWS credentials confi
 Next, we define our `spark-defaults.conf` (or pass these as configurations when building the Spark session) to wire everything up. Make sure to replace the masked S3 bucket name with your actual bucket:
 
 ```properties
-# === Iceberg + Glue Catalog Setup ===
-spark.sql.extensions                                org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
-spark.sql.catalog.glue                              org.apache.iceberg.spark.SparkCatalog
-spark.sql.catalog.glue.catalog-impl                 org.apache.iceberg.aws.glue.GlueCatalog
-spark.sql.catalog.glue.warehouse                    s3://<YOUR_S3_BUCKET_NAME>/warehouse/
-spark.sql.catalog.glue.io-impl                      org.apache.iceberg.aws.s3.S3FileIO
-spark.sql.defaultCatalog                            glue
-spark.sql.catalog.glue.default-namespace            demo_ps_db
+# === Iceberg + Glue ===
+spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
+spark.sql.catalog.glue=org.apache.iceberg.spark.SparkCatalog
+spark.sql.catalog.glue.catalog-impl=org.apache.iceberg.aws.glue.GlueCatalog
+spark.sql.catalog.glue.warehouse=s3://<REPLACE_YOUR_BUCKET_NAME>/warehouse/
+spark.sql.catalog.glue.io-impl=org.apache.iceberg.aws.s3.S3FileIO
+spark.sql.defaultCatalog=glue
+spark.sql.catalog.glue.default-namespace=<REPLACE_YOUR_GLUE_DB_NAME>
 
-# === Hadoop S3A (for reading raw CSVs) ===
-spark.hadoop.fs.s3a.impl                            org.apache.hadoop.fs.s3a.S3AFileSystem
-spark.hadoop.fs.s3a.aws.credentials.provider        com.amazonaws.auth.DefaultAWSCredentialsProviderChain
-spark.hadoop.fs.s3a.connection.timeout              60000
-spark.hadoop.fs.s3a.socket.timeout                  60000
-spark.hadoop.fs.s3a.connection.establish.timeout    60000
-spark.hadoop.fs.s3a.attempts.maximum                10
-spark.hadoop.fs.s3a.connection.maximum              200
-spark.hadoop.fs.s3a.fast.upload                     true
+# === Hadoop S3A (for spark.read.csv() etc.) ===
+spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
+spark.hadoop.fs.s3a.aws.credentials.provider=com.amazonaws.auth.DefaultAWSCredentialsProviderChain
+spark.hadoop.fs.s3a.connection.timeout=60000
+spark.hadoop.fs.s3a.socket.timeout=60000
+spark.hadoop.fs.s3a.connection.establish.timeout=60000
+spark.hadoop.fs.s3a.attempts.maximum=10
+spark.hadoop.fs.s3a.connection.maximum=200
+spark.hadoop.fs.s3a.fast.upload=true
 
-# === Spark Connect Settings ===
-spark.connect.grpc.binding.port                     15002
-spark.connect.grpc.maxInboundMessageSize            128m
+# === Spark Connect ===
+spark.connect.grpc.binding.port=15002
+spark.connect.grpc.maxInboundMessageSize=128m
 
-# === Resource Allocation ===
-spark.driver.memory                                 4g
-spark.executor.memory                               8g
-spark.executor.cores                                4
+# === Resources ===
+spark.driver.memory=4g
+spark.executor.memory=8g
+spark.executor.cores=4
 ```
 
 ### 3. Starting the Spark Connect Server
