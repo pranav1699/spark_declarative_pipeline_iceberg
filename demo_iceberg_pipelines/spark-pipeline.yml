@@ -1,0 +1,9 @@
+name: demo_iceberg_pipelines
+storage: file:///home/pranav/Downloads/projects/spark_streaming_paimon/demo_iceberg_pipelines/pipeline-storage
+catalog: glue
+database: demo_ps_db
+libraries:
+  - glob:
+      include: transformations/**
+configuration:
+  spark.remote: sc://localhost:15002
